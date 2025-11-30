@@ -27,11 +27,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Get new version
-        id: version
-        run: echo "new_version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
-        if: success()
-
       - name: Publish to npm
         run: npm publish --access public
         if: success()
