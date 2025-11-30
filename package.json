@@ -1,6 +1,6 @@
 {
   "name": "@light_yagami/create-vite-react",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "release": "npm run pack && npm run publish"
   },
   "bin": {
-    "@light_yagami/create-vite-react": "./bin/cli.js"
+    "create-vite-react": "./bin/cli.js"
   },
   "files": [
     "bin",
