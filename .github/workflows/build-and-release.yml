@@ -1,16 +1,17 @@
-name: Release to NPM
+name: Build and Release
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  release:
+  build-and-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
+      id-token: write
 
     steps:
       - name: Checkout code
@@ -20,63 +21,31 @@ jobs:
           persist-credentials: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
-          registry-url: "https://npm.pkg.github.com/"
-          always-auth: true
+          registry-url: "https://registry.npmjs.org"
+          token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Check and bump version if needed
-        id: version_check
-        run: |
-          # Get current package.json version
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
+      - name: Get new version
+        id: version
+        run: echo "new_version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        if: success()
 
-          echo "Current version: $CURRENT_VERSION"
-          echo "Package name: $PACKAGE_NAME"
-
-          # Get latest NPM version (handle case where package doesn't exist)
-          NPM_VERSION=$(npm view $PACKAGE_NAME version 2>/dev/null || echo "0.0.0")
-          echo "NPM version: $NPM_VERSION"
-
-          # Compare versions
-          if [ "$CURRENT_VERSION" = "$NPM_VERSION" ] || [ "$(printf '%s\n' "$NPM_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" = "$CURRENT_VERSION" ] && [ "$CURRENT_VERSION" != "$NPM_VERSION" ]; then
-            echo "Version needs to be bumped"
-            
-            # Bump version
-            npm version patch --no-git-tag-version
-            NEW_VERSION=$(node -p "require('./package.json').version")
-            
-            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-            echo "should_commit=true" >> $GITHUB_OUTPUT
-            echo "should_publish=true" >> $GITHUB_OUTPUT
-            
-            echo "Bumped to version: $NEW_VERSION"
-          else
-            echo "Version is already ahead, no bump needed"
-            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-            echo "should_commit=false" >> $GITHUB_OUTPUT
-            echo "should_publish=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit version bump
-        if: steps.version_check.outputs.should_commit == 'true'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add package.json package-lock.json
-          git commit -m "chore: bump version to ${{ steps.version_check.outputs.new_version }}"
-          git push
-
-      - name: Publish to NPM
-        if: steps.version_check.outputs.should_publish == 'true'
+      - name: Publish to npm
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: success()
 
-      - name: Create Git tag
-        if: steps.version_check.outputs.should_publish == 'true'
-        run: |
-          git tag v${{ steps.version_check.outputs.new_version }}
-          git push origin v${{ steps.version_check.outputs.new_version }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          body: |
+            Automated release for @light_yagami/create-vite-react
+            Version: ${{ steps.version.outputs.new_version }}
+            Commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: success()
