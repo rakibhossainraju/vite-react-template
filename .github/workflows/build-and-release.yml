@@ -26,27 +26,13 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Bump version
-        run: npm version patch --no-git-tag-version
-
-      - name: Get new version
-        id: version
-        run: echo "new_version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+      - name: Run release script
+        id: release
+        run: npm run release
+        if: success()
 
       - name: Publish to npm
         run: npm publish
-        if: success()
-
-      - name: Commit and push version bump
-        run: |
-          git add package.json
-          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
-          git push origin main
         if: success()
 
       - name: Create Release
