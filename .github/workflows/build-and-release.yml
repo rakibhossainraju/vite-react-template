@@ -20,10 +20,10 @@ jobs:
           persist-credentials: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+          registry-url: "https://npm.pkg.github.com/"
           always-auth: true
 
       - name: Check and bump version if needed
@@ -73,7 +73,7 @@ jobs:
         if: steps.version_check.outputs.should_publish == 'true'
         run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git tag
         if: steps.version_check.outputs.should_publish == 'true'
