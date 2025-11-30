@@ -1,17 +1,17 @@
 {
-  "name": "light-create-vite-react",
-  "version": "1.0.1",
+  "name": "@light_yagami/create-vite-react",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "light-create-vite-react": "./bin/cli.js"
+    "create-vite-react": "./bin/cli.js"
   },
   "files": [
     "bin",
     "template"
   ],
   "keywords": [],
-  "author": "",
+  "author": "Rakib Hossain Raju",
   "license": "ISC",
   "type": "module"
 }
