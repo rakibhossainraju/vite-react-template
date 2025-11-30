@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
-    "baseUrl": "template/src",
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["/*"],
       "@components/*": ["./components/*"],
