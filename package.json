@@ -3,13 +3,8 @@
   "version": "1.0.4",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "pack": "npm pack",
-    "publish": "npm publish --access public",
-    "release": "npm run pack && npm run publish"
-  },
   "bin": {
-    "create-vite-react": "./bin/cli.js"
+    "create-vite-react": "bin/cli.js"
   },
   "files": [
     "bin",
