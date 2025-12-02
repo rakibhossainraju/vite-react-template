@@ -6,10 +6,9 @@ import * as path from "node:path";
 
 const importTypeAlias = (): AliasOptions => {
   const alias: Alias[] = [];
-  const baseUrl = tsConfig.compilerOptions.baseUrl;
   for (const [key, value] of Object.entries(tsConfig.compilerOptions.paths)) {
     const find = key.replace("/*", "");
-    const replacement = path.resolve(baseUrl, value[0].replace("/*", ""));
+    const replacement = path.resolve(value[0].replace("/*", ""));
 
     alias.push({ find, replacement });
   }
