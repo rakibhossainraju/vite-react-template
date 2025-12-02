@@ -1,6 +1,6 @@
 {
   "name": "@light_yagami/create-vite-react",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "a boilerplate/template generator for vite react projects",
   "main": "index.js",
   "bin": {
