@@ -67,7 +67,3 @@ You can use:
 ```tsx
 import Button from '@components/Button';
 ```
-
-## License
-
-ISC
