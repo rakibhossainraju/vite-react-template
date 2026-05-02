@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    environment: create-vite-react
+    environment: npm-pkg-release
     permissions:
       contents: write
       packages: write
@@ -60,4 +60,4 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
