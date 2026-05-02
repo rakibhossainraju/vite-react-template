@@ -10,7 +10,7 @@ const template = path.join(__dirname, "../template");
 const target = process.argv[2];
 
 if (!target) {
-  console.log("Usage: create-light-vite <project-name>");
+  console.log("Usage: create-vite-react <project-name>");
   process.exit(1);
 }
 
