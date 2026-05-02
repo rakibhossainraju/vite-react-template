@@ -33,15 +33,24 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Check if version already exists on npm
+          if npm view "@light_yagami/create-vite-react@$VERSION" version > /dev/null 2>&1; then
+            echo "Version $VERSION already exists on npm. Skipping publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish to npm
+        if: steps.version.outputs.should_publish == 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: success()
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
+        if: steps.version.outputs.should_publish == 'true'
         with:
           tag_name: v${{ steps.version.outputs.new_version }}
           body: |
