@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
+          scope: "@light_yagami"
 
       - name: Get version
         id: version
